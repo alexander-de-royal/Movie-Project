@@ -1,43 +1,49 @@
 // LOADING ANIMATION
-// $(window).on("load", function(){
-//     $(".loader").fadeOut(4000);
-// });
+// window.addEventListener('load', () => {
+//     const loader = document.querySelector(".loader");
+//
+//     loader.classList.add("loader-hidden");
+//     loader.addEventListener("transitionend", () => {
+//         document.body.removeChild("loader");
+//     })
+// })
+
 
 // PAUSE MOVIE
 // Get the video
-// let video = document.getElementById("myVideo");
-// // Get the button
-// let btn = document.getElementById("myBtn");
-// // Pause and play the video, and change the button text
-// function myFunction() {
-//     if (video.paused) {
-//         video.play();
-//         btn.innerHTML = "Pause";
-//     } else {
-//         video.pause();
-//         btn.innerHTML = "Play";
-//     }
-// }
-
-// ADD MOVIE BUTTON
-let text = document.querySelectorAll('.addPopup');
-//SHOW AND HIDE INPUT FIELD
-function clickMe(e){
-
-    e.preventDefault();
-    // let text = document.getElementById("popup", "popup2", "popup3");
-    // let text = field;
-    for(let i = 0; i <= text.length; i++){
-
-        if (text[i].style.display === "none") {
-            text[i].style.display = "block";
-        } else {
-            text[i].style.display = "none";
-        }
-        // text[i].display.toggle("addpop");
+let video = document.getElementById("myVideo");
+// Get the button
+let btn = document.getElementById("myBtn");
+// Pause and play the video, and change the button text
+function myFunction() {
+    if (video.paused) {
+        video.play();
+        btn.innerHTML = "Pause";
+    } else {
+        video.pause();
+        btn.innerHTML = "Play";
     }
 }
-document.getElementById("showList").addEventListener("click", clickMe)
+
+// // ADD MOVIE BUTTON
+// let text = document.querySelectorAll('.addPopup');
+// //SHOW AND HIDE INPUT FIELD
+// function clickMe(e){
+//
+//     e.preventDefault();
+//     // let text = document.getElementById("popup", "popup2", "popup3");
+//     // let text = field;
+//     for(let i = 0; i <= text.length; i++){
+//
+//         if (text[i].style.display === "none") {
+//             text[i].style.display = "block";
+//         } else {
+//             text[i].style.display = "none";
+//         }
+//         // text[i].display.toggle("addpop");
+//     }
+// }
+// document.getElementById("showList").addEventListener("click", clickMe)
 
 
 // CRUD FUNCTIONS
@@ -50,18 +56,26 @@ const genreValue = document.getElementById('genre-value');
 const btnSubmit = document.querySelector('.btn');
 let output = '';
 
+// READ
+fetch(url)
+    .then(response => response.json())
+    .then(data => renderPosts(data));
 // CREATE
 const renderPosts = (posts) => {
-    console.log(posts)
+    // console.log(posts)
     posts.forEach(data => {
         output += `
+
                  <div class="card col-2 bg-black mt-4">
                     <div class="card-body" data-id=${data.id}>
                         <h5 class="card-title">${data.title}</h5>
                         <h6 class="card-subtitle">${data.body}</h6>
                         <p class="card-text">${data.genre}</p>
-                            <a href="" class="card-link" id="edit-post">Edit</a>
-                            <a href="" class="card-link" id="delete-post">Delete</a>
+                            <a href="" class="card-link btn btn-dark" id="edit-post">Edit
+                            </a>
+                         
+                            <a href="" class="card-link btn btn-dark" id="delete-post">Delete
+                            </a>
                     </div>
                 </div>
             `;
@@ -69,10 +83,7 @@ const renderPosts = (posts) => {
     postsList.innerHTML = output;
 }
 
-// READ
-fetch(url)
-    .then(response => response.json())
-    .then(data => renderPosts(data));
+
 
 postsList.addEventListener('click', (e) => {
     e.preventDefault()
@@ -88,6 +99,7 @@ postsList.addEventListener('click', (e) => {
         })
             .then(response => response.json())
             .then(() => location.reload())
+
     }
     if(editButtonPressed){
 
@@ -100,8 +112,6 @@ postsList.addEventListener('click', (e) => {
         bodyValue.value = bodyContent;
         genreValue.value = genreContent
 
-        console.log(titleValue.value)
-        console.log(bodyValue.value)
     }
     // Update - update the existing post
     // Method - FETCH
@@ -147,3 +157,145 @@ addPostForm.addEventListener('submit', (e) =>{
     bodyValue.value = '';
     genreValue.value ='';
 });
+
+//TMDB
+
+
+
+// getMovies(api_url)
+// function getMovies(url){
+//     fetch(url).then(res => res.json()).then(data => {
+//             data.forEach(movie => {
+//
+//             })
+//         })
+// }
+const base_url = 'https://api.themoviedb.org/3/';
+const api_key = 'api_key=3b1d5d2d0b04fe8a58433e296876916f';
+const api_url = base_url + '/discover/movie?sort_by=popularity.desc&' + api_key;
+const img_url = 'https://image.tmdb.org/t/p/w500';
+const searchURL = base_url + '/search/movie?' + api_key;
+const main = document.getElementById('main');
+
+const form = document.getElementById('form');
+const search = document.getElementById('search')
+const tagsEl = document.getElementsByClassName('slider')
+
+const genre = [
+    {
+        "id": 28,
+        "name": "Action"
+    },
+    {
+        "id": 12,
+        "name": "Adventure"
+    },
+    {
+        "id": 16,
+        "name": "Animation"
+    },
+    {
+        "id": 35,
+        "name": "Comedy"
+    },
+    {
+        "id": 80,
+        "name": "Crime"
+    },
+    {
+        "id": 99,
+        "name": "Documentary"
+    },
+    {
+        "id": 18,
+        "name": "Drama"
+    },
+    {
+        "id": 10751,
+        "name": "Family"
+    },
+    {
+        "id": 14,
+        "name": "Fantasy"
+    },
+    {
+        "id": 36,
+        "name": "History"
+    },
+    {
+        "id": 27,
+        "name": "Horror"
+    },
+    {
+        "id": 10402,
+        "name": "Music"
+    },
+    {
+        "id": 9648,
+        "name": "Mystery"
+    },
+    {
+        "id": 10749,
+        "name": "Romance"
+    },
+    {
+        "id": 878,
+        "name": "Science Fiction"
+    },
+    {
+        "id": 10770,
+        "name": "TV Movie"
+    },
+    {
+        "id": 53,
+        "name": "Thriller"
+    },
+    {
+        "id": 10752,
+        "name": "War"
+    },
+    {
+        "id": 37,
+        "name": "Western"
+    }
+]
+
+setGenre();
+function setGenre(){
+    tagsEl.innerHTML = '';
+    genre.forEach(genre => {
+        const t = document.createElement('div');
+        t.classList.add('')
+    })
+}
+getMovies(api_url);
+
+function getMovies(url){
+    fetch(url).then(res => res.json()).then(data => {showMovies(data.results);})
+}
+function showMovies(data){
+    main.innerHTML = '';
+    data.forEach(movie => {
+        const {title, poster_path, vote_average, overview} = movie;
+        const movieEl = document.createElement('div');
+        movieEl.classList.add('movie');
+        movieEl.innerHTML = `
+                            <div class="card-movie">
+                            <img src="${img_url+poster_path}" class="card-img-top" alt="${title}">
+                            </div>           
+        `
+        main.appendChild(movieEl);
+    })
+}
+
+form.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const searchTerm = search.value;
+
+    if(searchTerm){
+        getMovies(searchURL + '&query=' + searchTerm);
+    }
+})
+
+
