@@ -1,13 +1,13 @@
 // LOADING ANIMATION
-// window.addEventListener('load', () => {
-//     const loader = document.querySelector(".loader");
-//
-//     loader.classList.add("loader-hidden");
-//     loader.addEventListener("transitionend", () => {
-//         document.body.removeChild("loader");
-//     })
-// })
+window.addEventListener('load', () => {
+    const loader = document.querySelector(".loader");
 
+    loader.classList.add("loader-hidden");
+    loader.addEventListener("transitionend", () => {
+        document.body.removeChild("loader");
+    })
+})
+// animation
 
 // PAUSE MOVIE
 // Get the video
@@ -159,29 +159,19 @@ addPostForm.addEventListener('submit', (e) =>{
 });
 
 //TMDB
-
-
-
-// getMovies(api_url)
-// function getMovies(url){
-//     fetch(url).then(res => res.json()).then(data => {
-//             data.forEach(movie => {
-//
-//             })
-//         })
-// }
+// API
 const base_url = 'https://api.themoviedb.org/3/';
 const api_key = 'api_key=3b1d5d2d0b04fe8a58433e296876916f';
 const api_url = base_url + '/discover/movie?sort_by=popularity.desc&' + api_key;
 const img_url = 'https://image.tmdb.org/t/p/w500';
 const searchURL = base_url + '/search/movie?' + api_key;
+// HTML tags
 const main = document.getElementById('main');
-
 const form = document.getElementById('form');
 const search = document.getElementById('search')
-const tagsEl = document.getElementsByClassName('slider')
+const tagsEl = document.getElementById('tags')
 
-const genre = [
+const genres = [
     {
         "id": 28,
         "name": "Action"
@@ -199,28 +189,12 @@ const genre = [
         "name": "Comedy"
     },
     {
-        "id": 80,
-        "name": "Crime"
-    },
-    {
         "id": 99,
         "name": "Documentary"
     },
     {
-        "id": 18,
-        "name": "Drama"
-    },
-    {
         "id": 10751,
         "name": "Family"
-    },
-    {
-        "id": 14,
-        "name": "Fantasy"
-    },
-    {
-        "id": 36,
-        "name": "History"
     },
     {
         "id": 27,
@@ -231,47 +205,66 @@ const genre = [
         "name": "Music"
     },
     {
-        "id": 9648,
-        "name": "Mystery"
-    },
-    {
-        "id": 10749,
-        "name": "Romance"
-    },
-    {
-        "id": 878,
-        "name": "Science Fiction"
-    },
-    {
-        "id": 10770,
-        "name": "TV Movie"
-    },
-    {
-        "id": 53,
-        "name": "Thriller"
-    },
-    {
         "id": 10752,
         "name": "War"
     },
-    {
-        "id": 37,
-        "name": "Western"
-    }
 ]
 
+let selectedGenre =[];
 setGenre();
 function setGenre(){
     tagsEl.innerHTML = '';
-    genre.forEach(genre => {
+    genres.forEach(genre => {
         const t = document.createElement('div');
-        t.classList.add('')
+        t.classList.add('tag');
+        t.id = genre.id;
+        t.innerText = genre.name;
+        t.addEventListener('click', () => {
+            if(selectedGenre.length === 0){
+                selectedGenre.push(genre.id);
+            } else {
+                if(selectedGenre.includes(genre.id)){
+                    selectedGenre.forEach((id, idx) => {
+                        if(id === genre.id){
+                            selectedGenre.splice(idx, 1)
+                        }
+                    })
+                } else {
+                    selectedGenre.push(genre.id);
+                }
+            }
+            console.log(selectedGenre)
+            getMovies(api_url + '&with_genres=' + encodeURI(selectedGenre.join(',')));
+            highlightSelection()
+        })
+        tagsEl.append(t);
+        })
+
+}
+function highlightSelection(){
+    const tags = document.querySelectorAll('.tag');
+    tags.forEach(tag => {
+        tag.classList.remove('highlight');
     })
+    if(selectedGenre.length !== 0){
+        selectedGenre.forEach(id => {
+            const highlightedTag = document.getElementById(id);
+            highlightedTag.classList.add('highlight');
+        })
+    }
+
 }
 getMovies(api_url);
 
 function getMovies(url){
-    fetch(url).then(res => res.json()).then(data => {showMovies(data.results);})
+    fetch(url).then(res => res.json()).then(data => {
+        console.log(data.results)
+        if(data.results.length !== 0){
+            showMovies(data.results);
+        } else {
+            main.innerHTML = `<h1 class="no-results"> No Results Found </h1>`
+        }
+    })
 }
 function showMovies(data){
     main.innerHTML = '';
