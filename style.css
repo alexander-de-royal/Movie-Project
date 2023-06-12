@@ -15,6 +15,8 @@ body{
     background: linear-gradient(to bottom, black 0%, rgba(0, 0, 0, 0) 100%);
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr="#a6000000", endColorstr="#00000000",GradientType=0 );
     display: flex;
+    justify-content: space-between;
+    align-items: center;
     position: fixed;
     top: 0;
     left: 0;
@@ -82,6 +84,13 @@ html {
 h1 {
     color: cornflowerblue;
     font-family: "Corsiva Hebrew", sans-serif;
+}
+.header-logo{
+    color: cornflowerblue;
+}
+.header-image{
+    width: 30px;
+    margin-left: 20px;
 }
 .wrapper {
     display: grid;
@@ -209,6 +218,14 @@ a:hover, a:focus {
     outline: none;
     border: none;
     /*border: 2px solid red;*/
+}
+.navbar-image{
+    width: 30px;
+    background: transparent;
+    margin-right: 20px;
+}
+.add-post-form{
+    margin-right: 20px;
 }
 /*movie cards*/
 main{

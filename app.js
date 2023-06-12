@@ -14,6 +14,7 @@ window.addEventListener('load', () => {
 let video = document.getElementById("myVideo");
 // Get the button
 let btn = document.getElementById("myBtn");
+
 // Pause and play the video, and change the button text
 function myFunction() {
     if (video.paused) {
@@ -25,26 +26,6 @@ function myFunction() {
     }
 }
 
-// // ADD MOVIE BUTTON
-// let text = document.querySelectorAll('.addPopup');
-// //SHOW AND HIDE INPUT FIELD
-// function clickMe(e){
-//
-//     e.preventDefault();
-//     // let text = document.getElementById("popup", "popup2", "popup3");
-//     // let text = field;
-//     for(let i = 0; i <= text.length; i++){
-//
-//         if (text[i].style.display === "none") {
-//             text[i].style.display = "block";
-//         } else {
-//             text[i].style.display = "none";
-//         }
-//         // text[i].display.toggle("addpop");
-//     }
-// }
-// document.getElementById("showList").addEventListener("click", clickMe)
-
 
 // CRUD FUNCTIONS
 const url = 'https://free-trite-appliance.glitch.me/movies';
@@ -54,7 +35,7 @@ const titleValue = document.getElementById('title-value');
 const bodyValue = document.getElementById('body-value');
 const genreValue = document.getElementById('genre-value');
 const btnSubmit = document.querySelector('.btn');
-let output = '';
+
 
 // READ
 fetch(url)
@@ -62,10 +43,11 @@ fetch(url)
     .then(data => renderPosts(data));
 // CREATE
 const renderPosts = (posts) => {
+    let output = '';
     // console.log(posts)
     posts.forEach(data => {
+        // postsList.innerHTML = "";
         output += `
-
                  <div class="card col-2 bg-black mt-4">
                     <div class="card-body" data-id=${data.id}>
                         <h5 class="card-title">${data.title}</h5>
@@ -73,7 +55,6 @@ const renderPosts = (posts) => {
                         <p class="card-text">${data.genre}</p>
                             <a href="" class="card-link btn btn-dark" id="edit-post">Edit
                             </a>
-                         
                             <a href="" class="card-link btn btn-dark" id="delete-post">Delete
                             </a>
                     </div>
@@ -83,8 +64,32 @@ const renderPosts = (posts) => {
     postsList.innerHTML = output;
 }
 
+// UPDATE
+addPostForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            title: titleValue.value,
+            body: bodyValue.value,
+            genre: genreValue.value
+        })
+    })
+        .then(() =>
+            fetch(url))
+        .then(response => response.json())
+        .then(data => renderPosts(data));
+    // })
 
-
+    // Reset input field to empty
+    titleValue.value = '';
+    bodyValue.value = '';
+    genreValue.value = '';
+});
+// DELETING
 postsList.addEventListener('click', (e) => {
     e.preventDefault()
     let delButtonPressed = e.target.id === 'delete-post';
@@ -93,15 +98,18 @@ postsList.addEventListener('click', (e) => {
     let id = e.target.parentElement.dataset.id;
     // Delete - Remove the existing post
     // method: Delete
-    if(delButtonPressed){
+    if (delButtonPressed) {
+        // postsList.innerHTML = " ";
         fetch(`${url}/${id}`, {
             method: 'DELETE',
         })
+            .then(() =>
+                fetch(url))
             .then(response => response.json())
-            .then(() => location.reload())
+            .then(data => renderPosts(data));
 
     }
-    if(editButtonPressed){
+    if (editButtonPressed) {
 
         const parent = e.target.parentElement;
         let titleContent = parent.querySelector('.card-title').textContent;
@@ -128,36 +136,12 @@ postsList.addEventListener('click', (e) => {
                 genre: genreValue.value
             })
         })
+            .then(() =>
+                fetch(url))
             .then(response => response.json())
-            .then(() => location.reload())
+            .then(data => renderPosts(data));
     })
 });
-// UPDATE
-addPostForm.addEventListener('submit', (e) =>{
-    e.preventDefault();
-    fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            title: titleValue.value,
-            body: bodyValue.value,
-            genre: genreValue.value
-        })
-    })
-        .then(response => response.json())
-        .then(data => {
-            const dataArr = [];
-            dataArr.push(data);
-            renderPosts(dataArr);
-        })
-    // Reset input field to empty
-    titleValue.value = '';
-    bodyValue.value = '';
-    genreValue.value ='';
-});
-
 //TMDB
 // API
 const base_url = 'https://api.themoviedb.org/3/';
@@ -210,9 +194,10 @@ const genres = [
     },
 ]
 
-let selectedGenre =[];
+let selectedGenre = [];
 setGenre();
-function setGenre(){
+
+function setGenre() {
     tagsEl.innerHTML = '';
     genres.forEach(genre => {
         const t = document.createElement('div');
@@ -220,12 +205,12 @@ function setGenre(){
         t.id = genre.id;
         t.innerText = genre.name;
         t.addEventListener('click', () => {
-            if(selectedGenre.length === 0){
+            if (selectedGenre.length === 0) {
                 selectedGenre.push(genre.id);
             } else {
-                if(selectedGenre.includes(genre.id)){
+                if (selectedGenre.includes(genre.id)) {
                     selectedGenre.forEach((id, idx) => {
-                        if(id === genre.id){
+                        if (id === genre.id) {
                             selectedGenre.splice(idx, 1)
                         }
                     })
@@ -238,15 +223,16 @@ function setGenre(){
             highlightSelection()
         })
         tagsEl.append(t);
-        })
+    })
 
 }
-function highlightSelection(){
+
+function highlightSelection() {
     const tags = document.querySelectorAll('.tag');
     tags.forEach(tag => {
         tag.classList.remove('highlight');
     })
-    if(selectedGenre.length !== 0){
+    if (selectedGenre.length !== 0) {
         selectedGenre.forEach(id => {
             const highlightedTag = document.getElementById(id);
             highlightedTag.classList.add('highlight');
@@ -254,19 +240,21 @@ function highlightSelection(){
     }
 
 }
+
 getMovies(api_url);
 
-function getMovies(url){
+function getMovies(url) {
     fetch(url).then(res => res.json()).then(data => {
         console.log(data.results)
-        if(data.results.length !== 0){
+        if (data.results.length !== 0) {
             showMovies(data.results);
         } else {
             main.innerHTML = `<h1 class="no-results"> No Results Found </h1>`
         }
     })
 }
-function showMovies(data){
+
+function showMovies(data) {
     main.innerHTML = '';
     data.forEach(movie => {
         const {title, poster_path, vote_average, overview} = movie;
@@ -274,7 +262,7 @@ function showMovies(data){
         movieEl.classList.add('movie');
         movieEl.innerHTML = `
                             <div class="card-movie">
-                            <img src="${img_url+poster_path}" class="card-img-top" alt="${title}">
+                            <img src="${img_url + poster_path}" class="card-img-top" alt="${title}">
                             </div>           
         `
         main.appendChild(movieEl);
@@ -286,9 +274,13 @@ form.addEventListener('submit', (e) => {
 
     const searchTerm = search.value;
 
-    if(searchTerm){
+    if (searchTerm) {
         getMovies(searchURL + '&query=' + searchTerm);
     }
 })
+
+const something = (name) => {
+    `Hello ${name}`
+}
 
 
