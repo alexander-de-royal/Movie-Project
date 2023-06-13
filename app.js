@@ -279,8 +279,6 @@ form.addEventListener('submit', (e) => {
     }
 })
 
-const something = (name) => {
-    `Hello ${name}`
-}
+
 
 
