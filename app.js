@@ -145,7 +145,7 @@ postsList.addEventListener('click', (e) => {
 //TMDB
 // API
 const base_url = 'https://api.themoviedb.org/3/';
-const api_key = 'api_key=3b1d5d2d0b04fe8a58433e296876916f';
+const api_key = 'api_key=';
 const api_url = base_url + '/discover/movie?sort_by=popularity.desc&' + api_key;
 const img_url = 'https://image.tmdb.org/t/p/w500';
 const searchURL = base_url + '/search/movie?' + api_key;
